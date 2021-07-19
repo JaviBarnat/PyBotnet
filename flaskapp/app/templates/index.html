@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div>
+    <h1>
+        &#128373 PyBotnet
+    </h1>
+    <hr>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-md-center pb-4">
+        <div class="col-md-3">
+            <p class="row-table"><img src="{{ url_for('static', filename = 'img/logo.png') }}" width="120" height="120"></p>
+        </div>
+        <div class="col-md-9 align-self-center">
+            <h3>Trabajo de Fin de Grado - Creación de una botnet</h3>
+            <p>&#127891 Universidad de Valladolid - Grado de Ingeniería Informática mención Tecnologías de la Información</br>&#128100 Alumno: Javier Barrientos</p>
+        </div>
+    </div>
+    <h3>
+        Sobre PyBotnet
+    </h3>
+    <hr>
+
+    <div class="row pb-4">
+        <p>
+            Botnet desarrollada con fines educativos basada en protocolo IP contra equipos de la familia Windows. Tanto los bots como la aplicación web establecen una comunicación segura con el servidor de procedimiento remoto para la realización de las distintas tareas.
+            El trabajo ha sido desarrollado utilizando Python como lenguaje de programación, gRPC como sistema de llamada a procedimiento remoto (RPC) para el servidor 'Command & Control' que utiliza como transporte HTTP/2 y Protocol Buffers como lenguaje de descripción de interfaz.</br>
+            </br>
+            La aplicación web está escrita en Python y Flask.</br>
+            Los bots están escritos en Python y compilados con el módulo PyInstaller.
+        </p>
+    </div>
+    <h3>
+        ¿Qué hace realmente PyBotnet?
+    </h3>
+    <hr>
+    <div class="row pb-4">
+        <p>
+            Es la aplicación web se encarga de gestionar todos los aspectos de administración del servidor 'Command and Control' o C&C. Entre estos aspectos destaca la posibilidad de ver qué bots se han conectado con el servidor, descargar los logs generados a lo largo del tiempo en el servidor y mostrar su ubicación en un mapa global.</br>
+            Su principal funcionalidad es la gestión de tareas de los bots de la botnet.
+        </p>
+    </div>
+
+    <div class="row pb-4">
+        <h4>
+            &#129302&#128421 Bots
+        </h4>
+        <p>
+            En este apartado se muestran los bots registrados por la botnet.</br>
+            Los bots se identifican por un ID único. En el listado aparecerá el estado actual del bot (si está o no activo) y las principales propiedades de la máquina que ha infectado: sistema operativo (solo está disponible en Windows), nodo o nombre de la máquina, versión del sistema operativo, número de compilación, juego de instrucciones y los datos del procesador que presenta.</br>
+            </br>
+            Un ejemplo de como se vería esta tabla podría ser:
+        </p>
+    </div>
+    <div class="text-center pb-4">
+        <img class="img-fluid" src="{{ url_for('static', filename = 'img/bots.png') }}">
+    </div>
+    <div class="row pb-4">
+        <p>
+            Si se hace click sobre un bot de la lista podemos acceder a una vista general del bot.
+        </p>
+    </div>
+    <div class="text-center pb-4">
+        <img class="img-fluid" src="{{ url_for('static', filename = 'img/bot1.png') }}">
+    </div>
+    <div class="row pb-4">
+        <p>
+            También están disponibles las tareas (tanto pendientes como completas) que ha realizado.
+        </p>
+    </div>
+    <div class="text-center pb-4">
+        <img class="img-fluid" src="{{ url_for('static', filename = 'img/bot2.png') }}">
+    </div>
+    <div class="row">
+        <h4>
+            &#128203 Tareas
+        </h4>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La principal funcionalidad de una botnet es la utilización del bot y de las máquinas infectadas con un objetivo determinado. A continuación se recogen las tareas presentes que puede realizar el bot:
+        </p>
+    </div>
+    <div class="pb-1">
+    <h5>
+        Tarea CMD
+    </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea CMD permite ejecutar el comando deseado en la máquina remota y este devolverá el resultado de la ejecución.
+        </p>
+    </div>
+    <div class="pb-1">
+        <h5>
+            Tarea UPLOAD
+        </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea UPLOAD permite subir un fichero desde la máquina del servidor a la máquina donde reside el bot.
+        </p>
+    </div>
+    <div class="pb-1">
+        <h5>
+            Tarea DOWNLOAD
+        </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea DOWNLOAD permite bajar un fichero desde la máquina remota a la máquina servidor.
+        </p>
+    </div>
+    <div class="pb-1">
+        <h5>
+            Tarea SCREENSHOT
+        </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea SCREENSHOT realiza una captura de pantalla de la máquina remota y envía el resultado al servidor.
+        </p>
+    </div>
+    <div class="pb-1">
+        <h5>
+            Tarea SHUTDOWN
+        </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea SHUTDOWN permite apagar el bot de manera remota.
+        </p>
+    </div>
+    <div class="pb-1">
+        <h5>
+            Tarea DELETE
+        </h5>
+    </div>
+    <div class="row pb-4">
+        <p>
+            La tarea DELETE permite eliminar el bot de manera remota.
+        </p>
+    </div>
+
+    <div class="row">
+        <h4>
+            &#128221 Logs
+        </h4>
+    </div>
+    <div class="row pb-4">
+        <p>
+            El apartado Logs muestra los logs recogidos, tanto sobre los bots como sobre el servidor. Desde esta página puede acceder a ellos y descargarlos directamente.
+        </p>
+    </div>
+    
+    <div class="row pb-4">
+        <h4>
+            &#128194 Archivos
+        </h4>
+        <p>
+            El apartado muestra todos los elementos que hayan sido descargados de las máquinas remotas a través de la tarea DOWNLOAD. Presenta la estructura de carpetas y ficheros creada en el servidor así como su posibilidad de descargarse los ficheros directamente desde el servidor al cliente.
+            <br>
+            Un ejemplo de como se visualizará esta página con contenido sería el siguiente:
+        </p>
+    </div>
+    <div class="text-center pb-4">
+        <img class="img-fluid" src="{{ url_for('static', filename = 'img/files.png') }}">
+    </div>
+    <div class="row pb-4">
+        <p>
+            Con el objetivo de facilitar la localización y clasificación de los diferentes tipos de ficheros existentes se han añadido varios emojis que, dependiendo de la extensión del fichero, será uno u otro (por ejemplo, si es un vídeo contendrá el emoji &#127916).
+        </p>
+    </div>
+    <div class="row">
+        <h4>
+            &#127757 Mapa
+        </h4>
+    </div>
+    <div class="row pb-4">
+        <p>
+            El apartado Mapa muestra un mapa global. En este mapa, y siempre que haya algún bot registrado, podremos geolocalizarlo y estará marcado con un indicador. Si se pulsa sobre el indicador podremos acceder a una mayor información acerca del dispositivo.
+        </p>
+    </div>
+</div>
+
+{% endblock %}

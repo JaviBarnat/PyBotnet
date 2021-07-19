@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div>
+    <h1>&#127757 MAPA</h1>
+    <hr>
+</div>
+
+<div id="map" style="height: 650px;"></div>
+
+<script type="text/javascript">
+    var map = L.map('map').setView([40, -4], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    {{bots | safe }}
+</script>
+
+{% endblock %}

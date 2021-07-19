@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+// python -m grpc.tools.protoc --python_out=. --grpc_python_out=. --proto_path=. ./protos/botnet.proto --experimental_allow_proto3_optional
+
+// ###############
+// #    ENUMS    #
+// ###############
+
+enum Type {
+    UNKNOWN = 0;        
+    CONNECTION = 1;     // Conexion
+    ADMIN = 2;
+    CMD = 3;            // CMD
+    UPLOAD = 4;         // Subir fichero
+    DOWNLOAD = 5;       // Bajar fichero
+    SCREENSHOT = 6;     // Tomar captura de pantalla
+    SHUTDOWN = 7;       // Apagar bot
+    DELETE = 8;         //Eliminar bot
+}
+
+enum Status {
+    MISSING = 0;    // Desconocido
+    OK = 1;         // Correcto
+    ERROR = 2;      // Error
+    WAITING = 3;    // En espera
+}
+
+enum StatusBot {
+    CONNECTED = 0;
+    DISCONNECTED = 1;
+}
+
+// #######################
+// #    MENSAJE VACIO    #
+// #######################
+
+message Empty{}
+
+// ###################
+// #    HOST INFO    #
+// ###################
+
+message Geo {
+    string bot_id = 1;
+    string ip = 2;
+    string hostname = 3;
+    string city = 4;
+    string region = 5;
+    string country = 6;
+    string loc = 7;
+}
+
+message Bot {
+    string bot_id = 1;
+    StatusBot status = 2;
+    string system = 3;
+    string node = 4;
+    string release = 5;
+    string version = 6;
+    string machine = 7;
+    string processor = 8;
+    optional Geo geo = 9;
+}
+
+// ################
+// #    TAREAS    #
+// ################
+
+message TaskId {
+    string task_id = 1;
+}
+
+message Task {
+    string task_id = 1;
+    string bot_id = 2;
+    Type type = 3;
+    Status status = 4;
+    string date_start = 5;
+    string date_finish = 6;
+    optional string command = 7;
+    optional string file = 8;
+    optional string response = 9;
+}
+
+// ###################
+// #    RESPUESTA    #
+// ###################
+
+message Response {
+    Status status = 1;
+    Type type = 2;
+}
+
+// ###########
+// #   BOT   #
+// ###########
+
+message BotId {
+    string bot_id = 1;
+}
+
+// ###############
+// #    CHUNK    #
+// ###############
+
+message Chunk {
+    string bot_id = 1;
+    Status status = 2;
+    string filename = 3;
+    bytes data = 4;
+}
+
+message File {
+    string bot_id =1;
+    string file = 2;
+}
+
+//  SERVICIOS
+service Botnet {
+
+    // FICHEROS
+    rpc SendFile(stream Chunk) returns (Response);
+    rpc GetFile(File) returns (stream Chunk);
+
+    // OBTENER BOTS
+    rpc GetBots(Empty) returns (stream Bot);
+    rpc GetActiveBots(Empty) returns (stream Bot);
+    rpc GetBot(BotId) returns (Bot);
+
+    // CONECTAR EL BOT AL SERVIDOR
+    rpc SetConnection(Bot) returns (Response);
+
+    // OBTENER TAREAS
+    rpc SendStreamComplete(stream Task) returns (Response);
+    
+    rpc GetTasksBot(BotId) returns (stream Task);
+    rpc GetCompleteBot(BotId) returns (stream Task);
+    rpc GetTasks(Empty) returns (stream Task);
+    rpc GetComplete(Empty) returns (stream Task);
+    rpc GetTask(TaskId) returns (Task);
+    rpc AddTask(stream Task) returns (Response);
+    rpc GetGlobalBots(Empty) returns (stream Geo);
+}

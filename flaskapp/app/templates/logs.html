@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#128221 LOGS</h1>
+    <hr>
+</div>
+
+{% for folder in logs %}
+<ul>
+    &#128194 {{ folder }}
+    {% for log in logs[folder] %}
+    <ul>
+        {{ log | safe }}
+    </ul>
+    {% endfor %}
+</ul>
+{% endfor %}
+
+  
+{% endblock %}

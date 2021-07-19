@@ -1,0 +1,7 @@
+grpcio==1.38.0
+grpcio-tools==1.38.0
+flask==2.0.1
+requests==2.25.1
+pyinstaller==4.3
+pytz==2021.1
+pyscreeze==0.1.27

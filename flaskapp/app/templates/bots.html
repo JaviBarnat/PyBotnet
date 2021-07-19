@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#129302&#128421 BOTS</h1>
+    <hr>
+    <p>En esta página se muestran los bots registrados junto con la información de la máquina infectada.</p>
+    <p>&#129302 Total de bots: {{ total }}</p>
+    <p>
+        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Actualizar</button>
+        </br>
+    </p>
+</div>
+
+{% if total != 0 %}
+    <table class="table">
+        <thead>
+            <tr class="row-table">
+                <th scope="col" class="text-left">Bot ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">SO</th>
+                <th scope="col">Nodo</th>
+                <th scope="col">Versión SO</th>
+                <th scope="col">Número de compilación</th>
+                <th scope="col">Juego de instrucciones</th>
+                <th scope="col">Procesador</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bot in lista %}
+            <tr>
+                <th scope="row"><a href="bots/{{ bot.bot_id }}">{{ bot.bot_id }}</a></th>
+                {% if bot.status == 0 %}
+                    <td class="row-table">CONNECTED</td>
+                {% else %}
+                    <td class="row-table">DISCONNECTED</td>
+                {% endif %}
+                <td class="row-table">{{ bot.system }}</td>
+                <td class="row-table">{{ bot.node }}</td>
+                <td class="row-table">{{ bot.release }}</td>
+                <td class="row-table">{{ bot.version }}</td>
+                <td class="row-table">{{ bot.machine }}</td>
+                <td class="row-table">{{ bot.processor }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>&#10060 No hay bots disponibles en este momento.</p>
+{% endif %}
+  
+{% endblock %}

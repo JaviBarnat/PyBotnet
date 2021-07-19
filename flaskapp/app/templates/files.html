@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#128194 ARCHIVOS</h1>
+    <hr>
+</div>
+
+{% for bot in files %}
+<ul>
+    &#128194 BOT {{ bot }}
+    {% for file in files[bot] %}
+    <ul>
+        {{ file | safe }}
+    </ul>
+    {% endfor %}
+</ul>
+{% endfor %}
+
+
+{% endblock %}

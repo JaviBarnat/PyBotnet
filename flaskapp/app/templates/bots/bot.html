@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div>
+    <h1>&#129302 BOT {{ botid }}</h1>
+    <hr>
+    <p>En esta página se muestra la información del bot seleccionado.</p>
+    {% if bot.bot_id == "" %}
+        <p>El bot seleccionado no se encuentra disponible. No se ha podido ofrecer información al respecto.</p>
+    {% else %}
+        {% if bot.status == 0 %}
+            <p>Status: CONNECTED &#128268</p>
+        {% else %}
+            <p>Status: DISCONNECTED &#128164</p>
+        {% endif %}
+    <p>&#128203 Tareas pendientes: {{ tasks_n }}</p>
+    <p>&#9989 Total de tareas realizadas: {{ complete_n }}</p>
+    {% endif %}
+</div>
+
+{% if bot.bot_id != "" %}
+
+<div class="padd-apartado">
+    <h5>&#128421 Host y &#127757 Geoposición</h5>
+    <hr>
+    <p>Información de la máquina donde está alojado el bot.</p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr class="row-table">
+            <th scope="col">SO</th>
+            <th scope="col">Nodo</th>
+            <th scope="col">Versión SO</th>
+            <th scope="col">Número de compilación</th>
+            <th scope="col">Juego de instrucciones</th>
+            <th scope="col">Procesador</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="row-table">{{ bot.system }} </td>
+            <td class="row-table">{{ bot.node }} </td>
+            <td class="row-table">{{ bot.release }} </td>
+            <td class="row-table">{{ bot.version }} </td>
+            <td class="row-table">{{ bot.machine }} </td>
+            <td class="row-table">{{ bot.processor }} </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="row justify-content-center pt-4 pb-4">
+    <div class="col-sm-5">
+        <p>Datos de localización:<br><br>&#127760 Dirección IP: {{bot.geo.ip}}<br>&#128421 Nombre del host: {{bot.geo.hostname}}<br>&#128205 Ubicación: {{bot.geo.city}}, {{bot.geo.region}}, {{bot.geo.country}}</p>
+    </div>
+    <div class="col-sm-7" id="map" style="height: 350px; width: 350px;"></div>
+</div>
+
+
+<div class="padd-apartado">
+    <h5>&#128203 Tareas pendientes</h5>
+</div>
+
+{% if tasks_n != 0 %}
+
+<table class="table">
+    <thead>
+        <tr class="row-table">
+            <th scope="col" class="text-left">Tarea ID</th>
+            <th scope="col">Tipo de tarea</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Fecha tarea añadida</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in tasks %}
+        <tr>
+            <th scope="row"><a href="/tasks/{{ tarea.task_id }}">{{ tarea.task_id }}</a></th>
+            {% if tarea.type == 0 %}
+            <td class="row-table">UNKNOWN</td>
+            {% elif tarea.type == 1 %}
+            <td class="row-table">CONNECTION</td>
+            {% elif tarea.type == 3 %}
+            <td class="row-table">CMD</td>
+            {% elif tarea.type == 4 %}
+            <td class="row-table">UPLOAD</td>
+            {% elif tarea.type == 5 %}
+            <td class="row-table">DOWNLOAD</td>
+            {% elif tarea.type == 6 %}
+            <td class="row-table">SCREENSHOT</td>
+            {% elif tarea.type == 7 %}
+            <td class="row-table">SHUTDOWN</td>
+            {% endif %}
+
+            {% if tarea.status == 3 %}
+            <td class="row-table">WAITING</td>
+            {% elif tarea.status == 2 %}
+            <td class="row-table">ERROR</td>
+            {% endif %}
+            <td class="row-table">{{ tarea.date_start }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<hr>
+<p>&#10060 Este bot no tiene ninguna tarea pendiente.</p>
+
+{% endif %}
+
+{% endif %}
+
+{% if bot.bot_id != "" %}
+
+{% if complete_n != 0 %}
+
+<div class="padd-apartado">
+    <h5>&#9989 Tareas completadas</h5>
+    <hr>
+</div>
+
+<p>Tareas completadas a lo largo del tiempo. Si se pulsa sobre ella podrás obtener más información.</p>
+
+<table class="table">
+    <thead>
+        <tr class="row-table">
+            <th scope="col" class="text-left">Tarea ID</th>
+            <th scope="col">Tipo de tarea</th>
+            <th scope="col">Estado</th>      
+            <th scope="col">Fecha tarea añadida</th>
+            <th scope="col">Fecha tarea finalizada</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tarea in complete %}
+        <tr>
+            <th scope="row"><a href="/tasks/{{ tarea.task_id }}">{{ tarea.task_id }}</a></th>
+            {% if tarea.type == 0 %}
+            <td class="row-table">UNKNOWN</td>
+            {% elif tarea.type == 1 %}
+            <td class="row-table">CONNECTION</td>
+            {% elif tarea.type == 3 %}
+            <td class="row-table">CMD</td>
+            {% elif tarea.type == 4 %}
+            <td class="row-table">UPLOAD</td>
+            {% elif tarea.type == 5 %}
+            <td class="row-table">DOWNLOAD</td>
+            {% elif tarea.type == 6 %}
+            <td class="row-table">SCREENSHOT</td>
+            {% elif tarea.type == 7 %}
+            <td class="row-table">SHUTDOWN</td>
+            {% endif %}
+
+            {% if tarea.status == 0 %}
+            <td class="row-table">MISSING</td>
+            {% elif tarea.status == 1 %}
+            <td class="row-table">OK</td>
+            {% elif tarea.status == 2 %}
+            <td class="row-table">ERROR</td>
+            {% endif %}
+            <td class="row-table">{{ tarea.date_start }}</td>
+            <td class="row-table">{{ tarea.date_finish }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<div class="padd-apartado">
+    <h5>&#9989 Tareas completadas</h5>
+    <hr>
+</div>
+
+<p>&#10060 Este bot no ha completado ninguna tarea.</p>
+
+{% endif %}
+
+{% endif %}
+
+<script type="text/javascript">
+    {{ geomap | safe }}
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    {{geobot | safe }}
+</script>
+
+{% endblock %}
